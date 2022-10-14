@@ -14,8 +14,7 @@ public class Main {
     // 先输出 所有的 body 中的语句
 
     public static void main(String[] args) {
-        String sourceDirectory = "/Users/fe1w0/Project/Java/PointerAnalysis/sample";
+        String sourceDirectory = "sample";
         PointerAnalysis pointerAnalysis = new PointerAnalysis(sourceDirectory);
-        
     }
 }
