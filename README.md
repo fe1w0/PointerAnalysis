@@ -1,4 +1,4 @@
-# PointerAnalysis
+# Intraprocedural PointerAnalysis
 软件分析课作业，使用SOOT完成指针分析，不能直接调用SOOT的指针分析模块。
 
 ## TODO List

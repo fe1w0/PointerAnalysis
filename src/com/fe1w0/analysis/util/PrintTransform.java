@@ -23,17 +23,17 @@ public class PrintTransform extends SceneTransformer {
                 System.out.println(sc.getName() + " Units:");
                 // Print all units
                 int c = 1;
-                for (Unit util : jimpleBody.getUnits()) {
-                    System.out.println("(" + c + ") " + util.toString());
+                for (Unit unit : jimpleBody.getUnits()) {
+                    System.out.println("(" + c + ") " + unit.toString());
                     c++;
                     // Get DefinitionStmt Information
-                    if (util instanceof DefinitionStmt) {
+                    if (unit instanceof DefinitionStmt) {
                         // System.out.println("RightOP: " + ((DefinitionStmt) util).getRightOp().getType().toString());
-                        if (util instanceof IdentityUnit) {
-                            System.out.println("Is IdentityUnit: " + util.toString());
-                        } else if (util instanceof AssignStmt) {
-                            System.out.println("Is AssignStmt: " + util.toString());
-                            System.out.println("Stmt Right Value: " + ((DefinitionStmt) util).getRightOp().toString());
+                        if (unit instanceof IdentityUnit) {
+                            System.out.println("Is IdentityUnit: " + unit.toString());
+                        } else if (unit instanceof AssignStmt) {
+                            System.out.println("Is AssignStmt: " + unit.toString());
+                            System.out.println("Stmt Right Value: " + ((DefinitionStmt) unit).getRightOp().toString());
                             //
                         }
                     }

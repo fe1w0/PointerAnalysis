@@ -16,10 +16,10 @@ class AssignConstraint {
     // 以及 Constraint(r4, $r0);
     // 这里的存储的是 Local，还是String
     // 我的想法是存储 Local，从而尽可能保留信息，String 可以在输出的时候进行处理
-    Local to, from;
-    AssignConstraint(Local to, Local from) {
-        this.to = to;
+    Local from, to;
+    AssignConstraint(Local from, Local to) {
         this.from = from;
+        this.to = to;
     }
 }
 
@@ -35,8 +35,19 @@ public class SimpleAnderson {
         assignConstraints.add(currentAssignConstraint);
     }
 
+    // 利用 constraintsResults 约束求解，并将结果保存到 constraintsResults
     void run(){
-
+        // 需要 While，确保信息全部处理吗？
+        // 需要后续讨论，有点晃
+        for (AssignConstraint assignConstraint : assignConstraints) {
+            // constraintsResults 中还未有 assignConstraint 的指向分析结果
+            if (!constraintsResults.containsKey(assignConstraint.to)) {
+                constraintsResults.put(assignConstraint.to, new ArrayList<Local>());
+            }
+            if (!constraintsResults.containsKey(assignConstraint.from)) {
+                constraintsResults.put(assignConstraint.from, new ArrayList<Local>());
+            }
+            constraintsResults.get(assignConstraint.from).addAll(constraintsResults.get(assignConstraint.to));
+        }
     }
-
 }

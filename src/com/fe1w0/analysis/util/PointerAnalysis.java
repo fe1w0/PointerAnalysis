@@ -29,8 +29,8 @@ public class PointerAnalysis {
         // 在 wjtp Pack 中添加新的 Transform，并开启
         PackManager.v().getPack("wjtp").add(new Transform("wjtp.printAll", new PrintTransform()));
         Options.v().setPhaseOption("wjtp.printAll", "enabled:true");
-//        PackManager.v().getPack("wjtp").add(new Transform("wjtp.ownPta", new AnalysisTransform()));
-//        Options.v().setPhaseOption("wjtp.ownPta", "enabled:true");
+        PackManager.v().getPack("wjtp").add(new Transform("wjtp.ownPta", new AnalysisTransform()));
+        Options.v().setPhaseOption("wjtp.ownPta", "enabled:true");
         // https://github.com/soot-oss/soot/issues/1061
         Options.v().set_keep_line_number(true);
         Scene.v().loadNecessaryClasses();
