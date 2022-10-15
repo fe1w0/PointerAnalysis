@@ -1,6 +1,8 @@
 package com.fe1w0.analysis.util;
 
 import soot.*;
+import soot.jimple.AssignStmt;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.JimpleBody;
 
 import java.util.Map;
@@ -18,17 +20,26 @@ public class PrintTransform extends SceneTransformer {
                 System.out.println("--------------");
                 // Jimple body
                 JimpleBody jimpleBody = (JimpleBody) sootMethod.retrieveActiveBody();
-                System.out.println("Units:");
+                System.out.println(sc.getName() + " Units:");
                 // Print all units
                 int c = 1;
-                for (Unit u : jimpleBody.getUnits()) {
-                    System.out.println("(" + c + ") " + u.toString());
+                for (Unit util : jimpleBody.getUnits()) {
+                    System.out.println("(" + c + ") " + util.toString());
                     c++;
+                    // Get DefinitionStmt Information
+                    if (util instanceof DefinitionStmt) {
+                        // System.out.println("RightOP: " + ((DefinitionStmt) util).getRightOp().getType().toString());
+                        if (util instanceof IdentityUnit) {
+                            System.out.println("Is IdentityUnit: " + util.toString());
+                        } else if (util instanceof AssignStmt) {
+                            System.out.println("Is AssignStmt: " + util.toString());
+                        }
+                    }
                 }
                 System.out.println("--------------");
 
                 // Print all locals
-                System.out.println("Locals:");
+                System.out.println(sc.getName() + " Locals:");
                 c = 1;
                 for (Local local: jimpleBody.getLocals() ){
                     System.out.println("(" + c + ") " + local.toString());
