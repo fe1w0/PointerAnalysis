@@ -33,6 +33,8 @@ public class PrintTransform extends SceneTransformer {
                             System.out.println("Is IdentityUnit: " + util.toString());
                         } else if (util instanceof AssignStmt) {
                             System.out.println("Is AssignStmt: " + util.toString());
+                            System.out.println("Stmt Right Value: " + ((DefinitionStmt) util).getRightOp().toString());
+                            //
                         }
                     }
                 }
