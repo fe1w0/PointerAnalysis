@@ -14,13 +14,10 @@ public class PrintTransform extends SceneTransformer {
         // SootClass
         for (SootClass sc: Scene.v().getApplicationClasses()){
             // SootMethod
-            System.out.println("[+] Class: " + sc.getName());
             for (SootMethod sootMethod: sc.getMethods()) {
-                System.out.println("[+] Method: " + sootMethod.getName());
-                System.out.println("--------------");
                 // Jimple body
                 JimpleBody jimpleBody = (JimpleBody) sootMethod.retrieveActiveBody();
-                System.out.println(sc.getName() + " Units:");
+                System.out.println(sc.getName() + "." + sootMethod.getName() + " Units:");
                 // Print all units
                 int c = 1;
                 for (Unit unit : jimpleBody.getUnits()) {

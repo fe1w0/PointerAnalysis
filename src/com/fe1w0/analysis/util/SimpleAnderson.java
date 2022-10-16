@@ -1,6 +1,5 @@
 package com.fe1w0.analysis.util;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import soot.Local;
 
 import java.util.*;
@@ -37,17 +36,37 @@ public class SimpleAnderson {
 
     // 利用 constraintsResults 约束求解，并将结果保存到 constraintsResults
     void run(){
-        // 需要 While，确保信息全部处理吗？
-        // 需要后续讨论，有点晃
         for (AssignConstraint assignConstraint : assignConstraints) {
-            // constraintsResults 中还未有 assignConstraint 的指向分析结果
-            if (!constraintsResults.containsKey(assignConstraint.to)) {
-                constraintsResults.put(assignConstraint.to, new ArrayList<Local>());
+            if (assignConstraint.to == assignConstraint.from) {
+                List<Local> tmpLocals = new ArrayList<Local>();
+                tmpLocals.add(assignConstraint.from);
+                constraintsResults.put(assignConstraint.from, tmpLocals);
+            } else {
+                if (!constraintsResults.containsKey(assignConstraint.from)) {
+                    List<Local> tmpLocals = new ArrayList<Local>();
+                    tmpLocals.add(assignConstraint.to);
+                    constraintsResults.put(assignConstraint.from, tmpLocals);
+                }
+                for (Local tmpLocal : constraintsResults.get(assignConstraint.to)) {
+                    if (!constraintsResults.get(assignConstraint.from).contains(tmpLocal)) {
+                        constraintsResults.get(assignConstraint.from).add(tmpLocal);
+                    }
+                }
             }
-            if (!constraintsResults.containsKey(assignConstraint.from)) {
-                constraintsResults.put(assignConstraint.from, new ArrayList<Local>());
-            }
-            constraintsResults.get(assignConstraint.from).addAll(constraintsResults.get(assignConstraint.to));
         }
+    }
+
+    String getStringResult(){
+            StringBuffer stringResult  = new StringBuffer();
+            for(Map.Entry<Local, List<Local>> item : constraintsResults.entrySet()) {
+                Local fromItemLocal = item.getKey();
+                List<Local> toItemsLocal = item.getValue();
+                stringResult.append(fromItemLocal.toString() + " : ");
+                for (Local tmpToItemLocal : toItemsLocal) {
+                    stringResult.append(tmpToItemLocal.toString() + " ");
+                }
+                stringResult.append("\n");
+            }
+            return stringResult.toString();
     }
 }
