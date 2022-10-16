@@ -7,7 +7,10 @@
 - [ ] 测试
 - [ ] 优化
 
-### version 0.2 
+### version 0.1
+- [x] 测试 sample/hello
+
+### version 0.2
 - [ ] 考虑 `JInstanceFieldRef` 指令，即 `class.g` 无法用直接转换为Local 类
 
 ## 自言自语
