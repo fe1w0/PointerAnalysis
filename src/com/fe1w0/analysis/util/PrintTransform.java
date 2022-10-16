@@ -1,9 +1,7 @@
 package com.fe1w0.analysis.util;
 
 import soot.*;
-import soot.jimple.AssignStmt;
-import soot.jimple.DefinitionStmt;
-import soot.jimple.JimpleBody;
+import soot.jimple.*;
 
 import java.util.Map;
 
@@ -31,8 +29,13 @@ public class PrintTransform extends SceneTransformer {
                         } else if (unit instanceof AssignStmt) {
                             System.out.println("Is AssignStmt: " + unit.toString());
                             System.out.println("Stmt Right Value: " + ((DefinitionStmt) unit).getRightOp().toString());
-                            //
                         }
+                        Stmt stmt = (Stmt) unit;
+                        if(stmt.containsFieldRef()) {
+                            FieldRef fieldRef = stmt.getFieldRef();
+                            System.out.println("Stmt: " + stmt + " . " + fieldRef);
+                        }
+
                     }
                 }
                 System.out.println("--------------");
@@ -45,6 +48,8 @@ public class PrintTransform extends SceneTransformer {
                     c++;
                 }
                 System.out.println("--------------");
+
+
             }
         }
     }
