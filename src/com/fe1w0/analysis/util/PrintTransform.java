@@ -33,6 +33,7 @@ public class PrintTransform extends SceneTransformer {
                         Stmt stmt = (Stmt) unit;
                         if(stmt.containsFieldRef()) {
                             FieldRef fieldRef = stmt.getFieldRef();
+                            // 
                             System.out.println("Stmt: " + stmt + " . " + fieldRef);
                         }
 
