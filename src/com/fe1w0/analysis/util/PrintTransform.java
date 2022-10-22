@@ -15,7 +15,7 @@ public class PrintTransform extends SceneTransformer {
             for (SootMethod sootMethod: sc.getMethods()) {
                 // Jimple body
                 JimpleBody jimpleBody = (JimpleBody) sootMethod.retrieveActiveBody();
-                System.out.println(sc.getName() + "." + sootMethod.getName() + " Units:");
+                System.out.println(sc.getName() + "." + sootMethod.getName()+ "." + sootMethod.getSignature() + " Units:");
                 // Print all units
                 int c = 1;
                 for (Unit unit : jimpleBody.getUnits()) {
@@ -23,12 +23,20 @@ public class PrintTransform extends SceneTransformer {
                     c++;
                     // Get DefinitionStmt Information
                     if (unit instanceof DefinitionStmt) {
+                        Value rightValue = ((DefinitionStmt) unit).getRightOp();
+                        Value leftValue = ((DefinitionStmt) unit).getLeftOp();
                         // System.out.println("RightOP: " + ((DefinitionStmt) util).getRightOp().getType().toString());
                         if (unit instanceof IdentityUnit) {
                             System.out.println("Is IdentityUnit: " + unit.toString());
                         } else if (unit instanceof AssignStmt) {
                             System.out.println("Is AssignStmt: " + unit.toString());
                             System.out.println("Stmt Right Value: " + ((DefinitionStmt) unit).getRightOp().toString());
+                            if (rightValue instanceof FieldRef) {
+                                System.out.println("[*] Right Value FieldRef: " + rightValue);
+                            }
+                            if (leftValue instanceof  FieldRef) {
+                                System.out.println("[*] Left Value FieldRef: " + leftValue);
+                            }
                         }
                         Stmt stmt = (Stmt) unit;
                         if(stmt.containsFieldRef()) {

@@ -1,6 +1,7 @@
 package com.fe1w0.analysis.util;
 
 import soot.Local;
+import soot.Value;
 
 import java.util.*;
 
@@ -15,8 +16,8 @@ class AssignConstraint {
     // 以及 Constraint(r4, $r0);
     // 这里的存储的是 Local，还是String
     // 我的想法是存储 Local，从而尽可能保留信息，String 可以在输出的时候进行处理
-    Local from, to;
-    AssignConstraint(Local from, Local to) {
+    Value from, to;
+    AssignConstraint(Value from, Value to) {
         this.from = from;
         this.to = to;
     }
@@ -27,7 +28,7 @@ public class SimpleAnderson {
     private List<AssignConstraint> assignConstraints = new ArrayList<AssignConstraint>();
 
     // Anderson求解结果, constraintsResults anderson 约束求解结果
-    Map<Local, List<Local>> constraintsResults = new HashMap<Local, List<Local>>();
+    Map<Value, List<Value>> constraintsResults = new HashMap<Value, List<Value>>();
 
     // assignConstraints 添加新约束信息，用于后续分析
     void addAssignConstraints(AssignConstraint currentAssignConstraint) {
@@ -38,18 +39,18 @@ public class SimpleAnderson {
     void run(){
         for (AssignConstraint assignConstraint : assignConstraints) {
             if (assignConstraint.to == assignConstraint.from) {
-                List<Local> tmpLocals = new ArrayList<Local>();
+                List<Value> tmpLocals = new ArrayList<Value>();
                 tmpLocals.add(assignConstraint.from);
                 constraintsResults.put(assignConstraint.from, tmpLocals);
             } else {
                 if (!constraintsResults.containsKey(assignConstraint.from)) {
-                    List<Local> tmpLocals = new ArrayList<Local>();
+                    List<Value> tmpLocals = new ArrayList<Value>();
                     tmpLocals.add(assignConstraint.to);
                     constraintsResults.put(assignConstraint.from, tmpLocals);
                 }
-                for (Local tmpLocal : constraintsResults.get(assignConstraint.to)) {
-                    if (!constraintsResults.get(assignConstraint.from).contains(tmpLocal)) {
-                        constraintsResults.get(assignConstraint.from).add(tmpLocal);
+                for (Value tmpValue : constraintsResults.get(assignConstraint.to)) {
+                    if (!constraintsResults.get(assignConstraint.from).contains(tmpValue)) {
+                        constraintsResults.get(assignConstraint.from).add(tmpValue);
                     }
                 }
             }
@@ -58,11 +59,11 @@ public class SimpleAnderson {
 
     String getStringResult(){
             StringBuffer stringResult  = new StringBuffer();
-            for(Map.Entry<Local, List<Local>> item : constraintsResults.entrySet()) {
-                Local fromItemLocal = item.getKey();
-                List<Local> toItemsLocal = item.getValue();
+            for(Map.Entry<Value, List<Value>> item : constraintsResults.entrySet()) {
+                Value fromItemLocal = item.getKey();
+                List<Value> toItemsValue = item.getValue();
                 stringResult.append(fromItemLocal.toString() + " : ");
-                for (Local tmpToItemLocal : toItemsLocal) {
+                for (Value tmpToItemLocal : toItemsValue) {
                     stringResult.append(tmpToItemLocal.toString() + " ");
                 }
                 stringResult.append("\n");

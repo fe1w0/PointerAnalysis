@@ -43,8 +43,26 @@ public class AnalysisTransform extends SceneTransformer {
                                 System.out.println("[*] ClassCastException (rightValue startsWith new):" + unit);
                                 System.out.println(classCastException);
                             }
-//                        } else if (leftValue instanceof FieldRef) {
-//                            System.out.println("[*] FieldRef:" + leftValue);
+                        } else if (rightValue instanceof FieldRef) {
+                            try {
+                                Value tmpFrom = leftValue;
+                                FieldRef tmpTo = (FieldRef) ((FieldRef) rightValue).getFieldRef().resolve();
+                                simpleAnderson.addAssignConstraints(new AssignConstraint(tmpFrom, tmpTo));
+                            } catch (Exception exception) {
+                                System.out.println("[*] Exception (rightValue Instanceof FieldRef):" + unit);
+                                System.out.println(((FieldRef) rightValue).getFieldRef().resolve());
+                                System.out.println(exception);
+                            }
+                        } else if (leftValue instanceof FieldRef) {
+                            try {
+                                Value tmpTo = rightValue;
+                                FieldRef tmpFrom = (FieldRef) ((FieldRef) leftValue).getFieldRef().resolve();
+                                simpleAnderson.addAssignConstraints(new AssignConstraint(tmpFrom, tmpTo));
+                            } catch (Exception exception) {
+                                System.out.println("[*] Exception (leftValue Instanceof FieldRef):" + unit);
+                                System.out.println(((FieldRef) leftValue).getFieldRef().resolve());
+                                System.out.println(exception);
+                            }
                         } else if (rightValue instanceof Local) {
                             try {
                                 Local tmpLocalFrom = (Local) ((DefinitionStmt) unit).getLeftOp();
