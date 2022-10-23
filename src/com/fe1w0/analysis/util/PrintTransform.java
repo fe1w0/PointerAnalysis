@@ -30,19 +30,33 @@ public class PrintTransform extends SceneTransformer {
                             System.out.println("Is IdentityUnit: " + unit.toString());
                         } else if (unit instanceof AssignStmt) {
                             System.out.println("Is AssignStmt: " + unit.toString());
-                            System.out.println("Stmt Right Value: " + ((DefinitionStmt) unit).getRightOp().toString());
                             if (rightValue instanceof FieldRef) {
                                 System.out.println("[*] Right Value FieldRef: " + rightValue);
+                                // 真正的 FieldRef？
+                                FieldRef tmpFieldRef = ((FieldRef) rightValue);
+                                System.out.println("[*] GetFieldRef: " + tmpFieldRef.toString());
+                                SootField sootField = tmpFieldRef.getField();
+                                System.out.println("[*] GetField: " + sootField.toString());
+                                for (ValueBox valueBox : rightValue.getUseBoxes()) {
+                                    System.out.println(valueBox.getValue().toString());
+                                }
                             }
                             if (leftValue instanceof  FieldRef) {
                                 System.out.println("[*] Left Value FieldRef: " + leftValue);
+                                FieldRef tmpFieldRef = ((FieldRef) leftValue);
+                                System.out.println("[*] GetFieldRef: " + tmpFieldRef.toString());
+                                SootField sootField = tmpFieldRef.getField();
+                                System.out.println("[*] GetField: " + sootField.toString());
+                                for (ValueBox valueBox : leftValue.getUseBoxes()) {
+                                    System.out.println(valueBox.getValue().toString());
+                                }
                             }
                         }
                         Stmt stmt = (Stmt) unit;
                         if(stmt.containsFieldRef()) {
                             FieldRef fieldRef = stmt.getFieldRef();
                             // 
-                            System.out.println("Stmt: " + stmt + " . " + fieldRef);
+                            System.out.println("Stmt: " + stmt + ". " + fieldRef);
                         }
 
                     }

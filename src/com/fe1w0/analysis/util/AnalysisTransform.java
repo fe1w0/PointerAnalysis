@@ -1,5 +1,6 @@
 package com.fe1w0.analysis.util;
 
+import fj.P;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.DefinitionStmt;
@@ -25,6 +26,7 @@ public class AnalysisTransform extends SceneTransformer {
                 JimpleBody jimpleBody = (JimpleBody) sootMethod.retrieveActiveBody();
                 for (Unit unit : jimpleBody.getUnits()) {
                     if (unit instanceof IdentityUnit) {
+                        // Example r0 := @this: objects.B
                         try {
                             Local tmpLocal = (Local) ((DefinitionStmt) unit).getLeftOp();
                             simpleAnderson.addAssignConstraints(new AssignConstraint(tmpLocal, tmpLocal));
@@ -33,52 +35,66 @@ public class AnalysisTransform extends SceneTransformer {
                             System.out.println(classCastException);
                         }
                     } else if (unit instanceof AssignStmt) {
-                        Value rightValue = ((DefinitionStmt) unit).getRightOp();
                         Value leftValue = ((DefinitionStmt) unit).getLeftOp();
+                        Value rightValue = ((DefinitionStmt) unit).getRightOp();
                         if (rightValue.toString().startsWith("new")) {
+                            // Example $r1 = new objects.B
                             try {
-                                Local tmpLocal = (Local) ((DefinitionStmt) unit).getLeftOp();
+                                Local tmpLocal = (Local) leftValue;
                                 simpleAnderson.addAssignConstraints(new AssignConstraint(tmpLocal, tmpLocal));
                             } catch (ClassCastException classCastException) {
                                 System.out.println("[*] ClassCastException (rightValue startsWith new):" + unit);
                                 System.out.println(classCastException);
                             }
-                        } else if (rightValue instanceof FieldRef) {
+                        } else if (leftValue instanceof Local && rightValue instanceof Local) {
+                            // Example r4 = $r0
                             try {
-                                Value tmpFrom = leftValue;
-                                FieldRef tmpTo = (FieldRef) ((FieldRef) rightValue).getFieldRef().resolve();
-                                simpleAnderson.addAssignConstraints(new AssignConstraint(tmpFrom, tmpTo));
-                            } catch (Exception exception) {
-                                System.out.println("[*] Exception (rightValue Instanceof FieldRef):" + unit);
-                                System.out.println(((FieldRef) rightValue).getFieldRef().resolve());
-                                System.out.println(exception);
-                            }
-                        } else if (leftValue instanceof FieldRef) {
-                            try {
-                                Value tmpTo = rightValue;
-                                FieldRef tmpFrom = (FieldRef) ((FieldRef) leftValue).getFieldRef().resolve();
-                                simpleAnderson.addAssignConstraints(new AssignConstraint(tmpFrom, tmpTo));
-                            } catch (Exception exception) {
-                                System.out.println("[*] Exception (leftValue Instanceof FieldRef):" + unit);
-                                System.out.println(((FieldRef) leftValue).getFieldRef().resolve());
-                                System.out.println(exception);
-                            }
-                        } else if (rightValue instanceof Local) {
-                            try {
-                                Local tmpLocalFrom = (Local) ((DefinitionStmt) unit).getLeftOp();
-                                Local tmpLocalTo = (Local) ((DefinitionStmt) unit).getRightOp();
-                                simpleAnderson.addAssignConstraints(new AssignConstraint(tmpLocalFrom, tmpLocalTo));
+                                Local leftLocal = (Local) leftValue;
+                                Local rightLocal  = (Local) rightValue;
+                                simpleAnderson.addAssignConstraints(new AssignConstraint(leftLocal, rightLocal));
                             } catch (ClassCastException classCastException) {
-                                System.out.println("[*] ClassCastException (rightValue Instanceof Local):" + unit);
+                                System.out.println("[*] ClassCastException (Local, Local):" + unit);
+                                System.out.println(classCastException);
+                            }
+                        } else if (leftValue instanceof Local && rightValue instanceof FieldRef) {
+                            // Example $r2 = r0.<objects.A: objects.B g>
+                            try {
+                                Local leftLocal = (Local) leftValue;
+                                FieldRef rightFieldRef = (FieldRef) rightValue;
+                                simpleAnderson.addAssignConstraints(new AssignConstraint(leftLocal, rightFieldRef));
+                            } catch (ClassCastException classCastException) {
+                                System.out.println("[*] ClassCastException (Local, FieldRef):" + unit);
+                                System.out.println(classCastException);
+                            }
+                        } else if (leftValue instanceof FieldRef && rightValue instanceof Local) {
+                            // Example r0.<objects.A: objects.B g> = r1
+                            try {
+                                FieldRef leftFieldRef = (FieldRef) leftValue;
+                                Local rightLocal = (Local) rightValue;
+                                simpleAnderson.addAssignConstraints(new AssignConstraint(leftFieldRef, rightLocal));
+                            } catch (ClassCastException classCastException) {
+                                System.out.println("[*] ClassCastException (FieldRef, Local):" + unit);
+                                System.out.println(classCastException);
+                            }
+                        } else if (leftValue instanceof FieldRef && rightValue instanceof FieldRef) {
+                            // Example r0.<objects.A: objects.B g> = r0.<objects.A: objects.B f>
+                            try {
+                                FieldRef leftFieldRef = (FieldRef) leftValue;
+                                FieldRef rightFieldRef = (FieldRef) rightValue;
+                                simpleAnderson.addAssignConstraints(new AssignConstraint(leftFieldRef, rightFieldRef));
+                            } catch (ClassCastException classCastException){
+                                System.out.println("[*] ClassCastException (FieldRef, FieldRef):" + unit);
                                 System.out.println(classCastException);
                             }
                         }
                     }
                 }
+
                 // Anderson run
-                simpleAnderson.run();
+                simpleAnderson.solver();
                 System.out.println("---------------");
-                System.out.println("Analysis Result (" + sc.getName() + "." + sootMethod.getName() + "): ");
+                System.out.println("Analysis Result (" + sc.getName() + "." +
+                        sootMethod.getName() + "." + sootMethod.getSignature() + "): ");
                 System.out.println(simpleAnderson.getStringResult());
             }
         }

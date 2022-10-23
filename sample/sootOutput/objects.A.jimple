@@ -1,0 +1,103 @@
+public class objects.A extends java.lang.Object
+{
+    public int i;
+    public objects.B f;
+    public objects.B g;
+    public objects.B h;
+
+    public void <init>()
+    {
+        objects.A r0;
+        objects.B $r1, $r2;
+
+        r0 := @this: objects.A;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<objects.A: int i> = 5;
+
+        $r1 = new objects.B;
+
+        specialinvoke $r1.<objects.B: void <init>()>();
+
+        r0.<objects.A: objects.B f> = $r1;
+
+        $r2 = new objects.B;
+
+        specialinvoke $r2.<objects.B: void <init>()>();
+
+        r0.<objects.A: objects.B g> = $r2;
+
+        return;
+    }
+
+    public void <init>(objects.B)
+    {
+        objects.A r0;
+        objects.B $r1, $r2, r3, $r4;
+
+        r0 := @this: objects.A;
+
+        r3 := @parameter0: objects.B;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<objects.A: int i> = 5;
+
+        $r1 = new objects.B;
+
+        specialinvoke $r1.<objects.B: void <init>()>();
+
+        r0.<objects.A: objects.B f> = $r1;
+
+        $r2 = new objects.B;
+
+        specialinvoke $r2.<objects.B: void <init>()>();
+
+        r0.<objects.A: objects.B g> = $r2;
+
+        r0.<objects.A: objects.B f> = r3;
+
+        $r4 = r0.<objects.A: objects.B f>;
+
+        r0.<objects.A: objects.B g> = $r4;
+
+        return;
+    }
+
+    public objects.B getF()
+    {
+        objects.A r0;
+        objects.B $r1;
+
+        r0 := @this: objects.A;
+
+        $r1 = r0.<objects.A: objects.B f>;
+
+        return $r1;
+    }
+
+    public objects.B getH()
+    {
+        objects.A r0;
+        objects.B $r1;
+
+        r0 := @this: objects.A;
+
+        $r1 = r0.<objects.A: objects.B h>;
+
+        return $r1;
+    }
+
+    public objects.B id(objects.B)
+    {
+        objects.A r1;
+        objects.B r0;
+
+        r1 := @this: objects.A;
+
+        r0 := @parameter0: objects.B;
+
+        return r0;
+    }
+}

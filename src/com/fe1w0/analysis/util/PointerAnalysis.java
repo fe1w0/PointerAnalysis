@@ -27,8 +27,8 @@ public class PointerAnalysis {
         // 处理对象是 whole-jimple transformation pack
         Options.v().set_whole_program(true);
         // 在 wjtp Pack 中添加新的 Transform，并开启
-        PackManager.v().getPack("wjtp").add(new Transform("wjtp.printAll", new PrintTransform()));
-        Options.v().setPhaseOption("wjtp.printAll", "enabled:true");
+//        PackManager.v().getPack("wjtp").add(new Transform("wjtp.printAll", new PrintTransform()));
+//        Options.v().setPhaseOption("wjtp.printAll", "enabled:true");
         PackManager.v().getPack("wjtp").add(new Transform("wjtp.ownPta", new AnalysisTransform()));
         Options.v().setPhaseOption("wjtp.ownPta", "enabled:true");
         // https://github.com/soot-oss/soot/issues/1061
