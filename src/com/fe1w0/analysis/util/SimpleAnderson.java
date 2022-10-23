@@ -136,20 +136,20 @@ public class SimpleAnderson {
     }
 
         String getStringResult(){
-            StringBuffer stringResult  = new StringBuffer();
+            StringBuilder stringResult  = new StringBuilder();
             for(Map.Entry<ConstraintValue, List<ConstraintValue>> item : constraintsResults.entrySet()) {
                 ConstraintValue toConstraintValue = item.getKey();
                 List<ConstraintValue> fromConstraintValueList = item.getValue();
                 if (toConstraintValue.fieldRefValue != null) {
-                    stringResult.append(toConstraintValue.fieldRefValue.toString() + " : ");
+                    stringResult.append(toConstraintValue.fieldRefValue.toString()).append(" : ");
                 } else {
-                    stringResult.append(toConstraintValue.localValue.toString() + " : ");
+                    stringResult.append(toConstraintValue.localValue.toString()).append(" : ");
                 }
                 for (ConstraintValue fromConstraintValue : fromConstraintValueList) {
                     if (fromConstraintValue.fieldRefValue != null) {
-                        stringResult.append(fromConstraintValue.fieldRefValue.toString() + " ");
+                        stringResult.append(fromConstraintValue.fieldRefValue.toString()).append(" ");
                     } else {
-                        stringResult.append(fromConstraintValue.localValue.toString() + " ");
+                        stringResult.append(fromConstraintValue.localValue.toString()).append(" ");
                     }
                 }
                 stringResult.append("\n");
