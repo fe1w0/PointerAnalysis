@@ -24,6 +24,7 @@ public class AnalysisTransform extends SceneTransformer {
                 for (Unit unit : jimpleBody.getUnits()) {
                     if (unit instanceof IdentityUnit) {
                         // Example r0 := @this: objects.B
+                        // (leftValue, leftValue)
                         try {
                             Local tmpLocal = (Local) ((DefinitionStmt) unit).getLeftOp();
                             simpleAnderson.addAssignConstraints(new AssignConstraint(tmpLocal, tmpLocal));
@@ -36,6 +37,7 @@ public class AnalysisTransform extends SceneTransformer {
                         Value rightValue = ((DefinitionStmt) unit).getRightOp();
                         if (rightValue.toString().startsWith("new")) {
                             // Example $r1 = new objects.B
+                            // (leftValue, leftValue)
                             try {
                                 Local tmpLocal = (Local) leftValue;
                                 simpleAnderson.addAssignConstraints(new AssignConstraint(tmpLocal, tmpLocal));
@@ -48,6 +50,7 @@ public class AnalysisTransform extends SceneTransformer {
                             try {
                                 Local leftLocal = (Local) leftValue;
                                 Local rightLocal  = (Local) rightValue;
+                                System.out.println("[+] (Local, Local):" + unit);
                                 simpleAnderson.addAssignConstraints(new AssignConstraint(leftLocal, rightLocal));
                             } catch (ClassCastException classCastException) {
                                 System.out.println("[*] ClassCastException (Local, Local):" + unit);
@@ -58,6 +61,7 @@ public class AnalysisTransform extends SceneTransformer {
                             try {
                                 Local leftLocal = (Local) leftValue;
                                 FieldRef rightFieldRef = (FieldRef) rightValue;
+                                System.out.println("[+] (Local, FieldRef):" + unit);
                                 simpleAnderson.addAssignConstraints(new AssignConstraint(leftLocal, rightFieldRef));
                             } catch (ClassCastException classCastException) {
                                 System.out.println("[*] ClassCastException (Local, FieldRef):" + unit);
@@ -68,6 +72,7 @@ public class AnalysisTransform extends SceneTransformer {
                             try {
                                 FieldRef leftFieldRef = (FieldRef) leftValue;
                                 Local rightLocal = (Local) rightValue;
+                                System.out.println("[+] (FieldRef, Local):" + unit);
                                 simpleAnderson.addAssignConstraints(new AssignConstraint(leftFieldRef, rightLocal));
                             } catch (ClassCastException classCastException) {
                                 System.out.println("[*] ClassCastException (FieldRef, Local):" + unit);
@@ -78,9 +83,30 @@ public class AnalysisTransform extends SceneTransformer {
                             try {
                                 FieldRef leftFieldRef = (FieldRef) leftValue;
                                 FieldRef rightFieldRef = (FieldRef) rightValue;
+                                System.out.println("[+] (FieldRef, FieldRef):" + unit);
                                 simpleAnderson.addAssignConstraints(new AssignConstraint(leftFieldRef, rightFieldRef));
                             } catch (ClassCastException classCastException){
                                 System.out.println("[*] ClassCastException (FieldRef, FieldRef):" + unit);
+                                System.out.println(classCastException);
+                            }
+                        } else if (leftValue instanceof Local) {
+                            // Example r0 = 5
+                            try {
+                                Local leftLocal = (Local) leftValue;
+                                System.out.println("[+] (Local, NOT):" + unit);
+                                simpleAnderson.addAssignConstraints(new AssignConstraint(leftLocal, leftLocal));
+                            } catch (ClassCastException classCastException){
+                                System.out.println("[*] ClassCastException (Local, NOT):" + unit);
+                                System.out.println(classCastException);
+                            }
+                        }  else if (leftValue instanceof FieldRef) {
+                            // Example r0.<objects.A: objects.B g> = 5
+                            try {
+                                FieldRef leftFieldRef = (FieldRef) leftValue;
+                                System.out.println("[+] (FieldRef, NOT):" + unit);
+                                simpleAnderson.addAssignConstraints(new AssignConstraint(leftFieldRef, leftFieldRef));
+                            } catch (ClassCastException classCastException){
+                                System.out.println("[*] ClassCastException (FieldRef, NOT):" + unit);
                                 System.out.println(classCastException);
                             }
                         }
