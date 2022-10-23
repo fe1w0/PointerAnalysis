@@ -15,6 +15,7 @@ public class A {
 
     public A(B b) {
         this.f = b;
+        this.g = this.f;
     }
 
     public B getF() {
