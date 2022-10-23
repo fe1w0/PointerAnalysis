@@ -1,6 +1,5 @@
 package com.fe1w0.analysis.util;
 
-import fj.P;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.DefinitionStmt;
@@ -8,8 +7,6 @@ import soot.jimple.FieldRef;
 import soot.jimple.JimpleBody;
 import soot.Local;
 import soot.Unit;
-import soot.jimple.internal.JInstanceFieldRef;
-import sun.management.counter.Units;
 
 import java.util.Map;
 

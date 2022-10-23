@@ -1,7 +1,6 @@
 package com.fe1w0.analysis.util;
 
 import soot.Local;
-import soot.Value;
 import soot.ValueBox;
 import soot.jimple.FieldRef;
 
