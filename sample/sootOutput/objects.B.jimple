@@ -1,0 +1,14 @@
+public class objects.B extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        objects.B r0;
+
+        r0 := @this: objects.B;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+}
