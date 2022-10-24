@@ -1,6 +1,8 @@
 package com.fe1w0.analysis.util;
 
+import fj.Hash;
 import soot.Local;
+import soot.SootFieldRef;
 import soot.ValueBox;
 import soot.jimple.FieldRef;
 
@@ -24,16 +26,11 @@ class ConstraintValue {
         if (localList.size() == 1) {
             localValue = localList.get(0);
             fieldRefValue = fieldRef;
-//            System.out.println("TEST: " + localValue + " ; " + fieldRefValue);
         } else {
             throw new ClassCastException("Owning to localList.size() not equal 1, program fails to construct AssignConstraint object");
         }
     }
 
-    ConstraintValue (Local local, FieldRef fieldRef) {
-        localValue = local;
-        fieldRefValue = fieldRef;
-    }
     public static List<Local> getLocalFromFieldRef(FieldRef fieldRef) {
         // 得到fieldRef 的 所有 Local，但为什么我感觉FieldRef只有一个Local？
         List<Local> localList = new ArrayList<Local>();
@@ -41,6 +38,19 @@ class ConstraintValue {
             localList.add((Local)valueBox.getValue());
         }
         return localList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConstraintValue that = (ConstraintValue) o;
+        return Objects.equals(localValue, that.localValue) && Objects.equals(fieldRefValue, that.fieldRefValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(localValue, fieldRefValue);
     }
 }
 
@@ -50,10 +60,6 @@ class AssignConstraint {
     ConstraintValue toConstraintValue;
     ConstraintValue fromConstraintValue;
 
-    AssignConstraint (ConstraintValue to, ConstraintValue from) {
-        toConstraintValue  = to;
-        fromConstraintValue = from;
-    }
 
     AssignConstraint (Local to, Local from) {
         toConstraintValue = new ConstraintValue(to);
@@ -79,10 +85,10 @@ class AssignConstraint {
 public class SimpleAnderson {
 
     // 存储所有的约束信息
-    private final List<AssignConstraint> assignConstraints = new ArrayList<AssignConstraint>();
+    private final LinkedHashSet<AssignConstraint> assignConstraints = new LinkedHashSet<AssignConstraint>();
 
     // Anderson求解结果, constraintsResults anderson 约束求解结果
-    Map<ConstraintValue, List<ConstraintValue>> constraintsResults = new HashMap<ConstraintValue, List<ConstraintValue>>();
+    LinkedHashMap<ConstraintValue, LinkedHashSet<ConstraintValue>> constraintsResults = new LinkedHashMap<ConstraintValue, LinkedHashSet<ConstraintValue>>();
 
     // assignConstraints 添加新约束信息，用于后续分析
     void addAssignConstraints(AssignConstraint assignConstraint) {
@@ -90,18 +96,19 @@ public class SimpleAnderson {
     }
 
     void solver() {
+        System.out.println(printValues());
         try {
             for (AssignConstraint assignConstraint : assignConstraints) {
-                if (assignConstraint.toConstraintValue == assignConstraint.fromConstraintValue) {
-                    List<ConstraintValue> tmpValues = new ArrayList<ConstraintValue>();
-                    tmpValues.add(assignConstraint.fromConstraintValue);
-                    constraintsResults.put(assignConstraint.fromConstraintValue, tmpValues);
+                if (assignConstraint.fromConstraintValue.equals(assignConstraint.toConstraintValue)){
+                    LinkedHashSet<ConstraintValue> tmpValues = new LinkedHashSet<ConstraintValue>();
+                    tmpValues.add(assignConstraint.toConstraintValue);
+                    constraintsResults.put(assignConstraint.toConstraintValue, tmpValues);
                 } else {
                     if (!constraintsResults.containsKey(assignConstraint.toConstraintValue)) {
                         // to 之前不存在
-                        List<ConstraintValue> tmpValues = new ArrayList<ConstraintValue>();
+                        LinkedHashSet<ConstraintValue> tmpValues = new LinkedHashSet<ConstraintValue>();
                         if (constraintsResults.containsKey(assignConstraint.fromConstraintValue)) {
-                            // from 之前已经有保存
+                            // from 之前已经有保存 constraintsResults.containsKey。
                             for (ConstraintValue tmpValue : constraintsResults.get(assignConstraint.fromConstraintValue)) {
                                 if (!tmpValues.contains(tmpValue)) {
                                     tmpValues.add(tmpValue);
@@ -111,14 +118,13 @@ public class SimpleAnderson {
                             // from 之前没有保存
                             tmpValues.add(assignConstraint.fromConstraintValue);
                         }
-                        constraintsResults.put(assignConstraint.fromConstraintValue, tmpValues);
+                        constraintsResults.put(assignConstraint.toConstraintValue, tmpValues);
                     } else {
                         // to 之前存在
-//                        List<ConstraintValue> currentValues = constraintsResults.get(assignConstraint.toConstraintValue);
                         if (constraintsResults.containsKey(assignConstraint.fromConstraintValue)) {
                             // from 之前已经有保存
                             for (ConstraintValue tmpValue : constraintsResults.get(assignConstraint.fromConstraintValue)) {
-                                if ( (constraintsResults.get(assignConstraint.toConstraintValue)).contains(tmpValue)) {
+                                if ( !(constraintsResults.get(assignConstraint.toConstraintValue)).contains(tmpValue)) {
                                     (constraintsResults.get(assignConstraint.toConstraintValue)).add(tmpValue);
                                 }
                             }
@@ -135,25 +141,44 @@ public class SimpleAnderson {
         }
     }
 
-        String getStringResult(){
-            StringBuilder stringResult  = new StringBuilder();
-            for(Map.Entry<ConstraintValue, List<ConstraintValue>> item : constraintsResults.entrySet()) {
-                ConstraintValue toConstraintValue = item.getKey();
-                List<ConstraintValue> fromConstraintValueList = item.getValue();
-                if (toConstraintValue.fieldRefValue != null) {
-                    stringResult.append(toConstraintValue.fieldRefValue.toString()).append(" : ");
-                } else {
-                    stringResult.append(toConstraintValue.localValue.toString()).append(" : ");
-                }
-                for (ConstraintValue fromConstraintValue : fromConstraintValueList) {
-                    if (fromConstraintValue.fieldRefValue != null) {
-                        stringResult.append(fromConstraintValue.fieldRefValue.toString()).append(" ");
-                    } else {
-                        stringResult.append(fromConstraintValue.localValue.toString()).append(" ");
-                    }
-                }
-                stringResult.append("\n");
+    public String printValues() {
+        StringBuilder stringResult  = new StringBuilder();
+        for (AssignConstraint assignConstraint : assignConstraints) {
+            if (assignConstraint.toConstraintValue.fieldRefValue != null) {
+                stringResult.append(assignConstraint.toConstraintValue.fieldRefValue.toString()).append(" : ");
+            } else {
+                stringResult.append(assignConstraint.toConstraintValue.localValue.toString()).append(" : ");
             }
-            return stringResult.toString();
+            if (assignConstraint.fromConstraintValue.fieldRefValue != null) {
+                stringResult.append(assignConstraint.fromConstraintValue.fieldRefValue.toString()).append("\n");
+            } else {
+                stringResult.append(assignConstraint.fromConstraintValue.localValue.toString()).append("\n");
+            }
+        }
+        stringResult.append("\n");
+        return stringResult.toString();
+    }
+
+    String getStringResult(){
+        StringBuilder stringResult  = new StringBuilder();
+        for(Map.Entry<ConstraintValue, LinkedHashSet<ConstraintValue>> item : constraintsResults.entrySet()) {
+            ConstraintValue toConstraintValue = item.getKey();
+            LinkedHashSet<ConstraintValue> fromConstraintValueList = item.getValue();
+            if (toConstraintValue.fieldRefValue != null) {
+                stringResult.append(toConstraintValue.fieldRefValue.toString()).append(" : ");
+            } else {
+                stringResult.append(toConstraintValue.localValue.toString()).append(" : ");
+            }
+            stringResult.append("(size:" + fromConstraintValueList.size() + ") ");
+            for (ConstraintValue fromConstraintValue : fromConstraintValueList) {
+                if (fromConstraintValue.fieldRefValue != null) {
+                    stringResult.append(fromConstraintValue.fieldRefValue.toString()).append(" ");
+                } else {
+                    stringResult.append(fromConstraintValue.localValue.toString()).append(" ");
+                }
+            }
+            stringResult.append("\n");
+        }
+        return stringResult.toString();
     }
 }

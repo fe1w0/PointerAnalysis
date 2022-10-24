@@ -27,6 +27,7 @@ public class AnalysisTransform extends SceneTransformer {
                         // (leftValue, leftValue)
                         try {
                             Local tmpLocal = (Local) ((DefinitionStmt) unit).getLeftOp();
+                            System.out.println("[+] IdentityUnit (Local, Local):" + unit);
                             simpleAnderson.addAssignConstraints(new AssignConstraint(tmpLocal, tmpLocal));
                         } catch (ClassCastException classCastException) {
                             System.out.println("[*] ClassCastException (IdentityUnit startsWith new):" + unit);
@@ -40,6 +41,7 @@ public class AnalysisTransform extends SceneTransformer {
                             // (leftValue, leftValue)
                             try {
                                 Local tmpLocal = (Local) leftValue;
+                                System.out.println("[+] start with \"new\" (Local, Local):" + unit);
                                 simpleAnderson.addAssignConstraints(new AssignConstraint(tmpLocal, tmpLocal));
                             } catch (ClassCastException classCastException) {
                                 System.out.println("[*] ClassCastException (rightValue startsWith new):" + unit);
