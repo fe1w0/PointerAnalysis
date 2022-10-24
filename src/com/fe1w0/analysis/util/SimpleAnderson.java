@@ -2,7 +2,7 @@ package com.fe1w0.analysis.util;
 
 import fj.Hash;
 import soot.Local;
-import soot.SootFieldRef;
+import soot.SootField;
 import soot.ValueBox;
 import soot.jimple.FieldRef;
 
@@ -13,19 +13,24 @@ class ConstraintValue {
     // to, from 我们都认为是一个 ConstraintValue
     // ConstraintValue 是由一个 Local 和 一个 FieldRef
     Local localValue;
-    FieldRef fieldRefValue;
+//    FieldRef fieldRefValue;
+    SootField fieldValue;
 
     ConstraintValue (Local local){
         // 约束的变量为 Local
         localValue = local;
-        fieldRefValue = null;
+        fieldValue = null;
+//        System.out.println("Local HashCode: " + localValue.hashCode());
     }
 
     ConstraintValue (FieldRef fieldRef) throws ClassCastException {
         List<Local> localList = ConstraintValue.getLocalFromFieldRef(fieldRef);
         if (localList.size() == 1) {
             localValue = localList.get(0);
-            fieldRefValue = fieldRef;
+            fieldValue = fieldRef.getField();
+//            System.out.println("Local HashCode: " + localValue.hashCode() +
+//                    ";FieldRef HashCode: " + fieldRef.hashCode() +
+//                    ";FieldRef Field HashCode: " + fieldRef.getField().hashCode());
         } else {
             throw new ClassCastException("Owning to localList.size() not equal 1, program fails to construct AssignConstraint object");
         }
@@ -45,12 +50,16 @@ class ConstraintValue {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConstraintValue that = (ConstraintValue) o;
-        return Objects.equals(localValue, that.localValue) && Objects.equals(fieldRefValue, that.fieldRefValue);
+        return Objects.equals(localValue, that.localValue) && Objects.equals(fieldValue, that.fieldValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(localValue, fieldRefValue);
+        if (fieldValue == null) {
+            return localValue.hashCode();
+        } else {
+            return fieldValue.hashCode();
+        }
     }
 }
 
@@ -107,6 +116,7 @@ public class SimpleAnderson {
                     if (!constraintsResults.containsKey(assignConstraint.toConstraintValue)) {
                         // to 之前不存在
                         LinkedHashSet<ConstraintValue> tmpValues = new LinkedHashSet<ConstraintValue>();
+                        tmpValues.add(assignConstraint.toConstraintValue);
                         if (constraintsResults.containsKey(assignConstraint.fromConstraintValue)) {
                             // from 之前已经有保存 constraintsResults.containsKey。
                             for (ConstraintValue tmpValue : constraintsResults.get(assignConstraint.fromConstraintValue)) {
@@ -144,13 +154,15 @@ public class SimpleAnderson {
     public String printValues() {
         StringBuilder stringResult  = new StringBuilder();
         for (AssignConstraint assignConstraint : assignConstraints) {
-            if (assignConstraint.toConstraintValue.fieldRefValue != null) {
-                stringResult.append(assignConstraint.toConstraintValue.fieldRefValue.toString()).append(" : ");
+            if (assignConstraint.toConstraintValue.fieldValue != null) {
+                stringResult.append(assignConstraint.toConstraintValue.localValue.toString() + "." +
+                        assignConstraint.toConstraintValue.fieldValue.toString()).append(" : ");
             } else {
                 stringResult.append(assignConstraint.toConstraintValue.localValue.toString()).append(" : ");
             }
-            if (assignConstraint.fromConstraintValue.fieldRefValue != null) {
-                stringResult.append(assignConstraint.fromConstraintValue.fieldRefValue.toString()).append("\n");
+            if (assignConstraint.fromConstraintValue.fieldValue != null) {
+                stringResult.append(assignConstraint.toConstraintValue.localValue.toString() + "." +
+                        assignConstraint.fromConstraintValue.fieldValue.toString()).append("\n");
             } else {
                 stringResult.append(assignConstraint.fromConstraintValue.localValue.toString()).append("\n");
             }
@@ -164,15 +176,15 @@ public class SimpleAnderson {
         for(Map.Entry<ConstraintValue, LinkedHashSet<ConstraintValue>> item : constraintsResults.entrySet()) {
             ConstraintValue toConstraintValue = item.getKey();
             LinkedHashSet<ConstraintValue> fromConstraintValueList = item.getValue();
-            if (toConstraintValue.fieldRefValue != null) {
-                stringResult.append(toConstraintValue.fieldRefValue.toString()).append(" : ");
+            if (toConstraintValue.fieldValue != null) {
+                stringResult.append(toConstraintValue.localValue.toString() + "." + toConstraintValue.fieldValue.toString()).append(" : ");
             } else {
                 stringResult.append(toConstraintValue.localValue.toString()).append(" : ");
             }
-            stringResult.append("(size:" + fromConstraintValueList.size() + ") ");
+//            stringResult.append("(hashCode:" + toConstraintValue.hashCode() + ") ");
             for (ConstraintValue fromConstraintValue : fromConstraintValueList) {
-                if (fromConstraintValue.fieldRefValue != null) {
-                    stringResult.append(fromConstraintValue.fieldRefValue.toString()).append(" ");
+                if (fromConstraintValue.fieldValue != null) {
+                    stringResult.append(fromConstraintValue.localValue.toString() + "." + fromConstraintValue.fieldValue.toString()).append(" ");
                 } else {
                     stringResult.append(fromConstraintValue.localValue.toString()).append(" ");
                 }
