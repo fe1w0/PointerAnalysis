@@ -105,7 +105,7 @@ public class SimpleAnderson {
     }
 
     void solver() {
-        System.out.println(printValues());
+//        System.out.println(printValues());
         try {
             for (AssignConstraint assignConstraint : assignConstraints) {
                 if (assignConstraint.fromConstraintValue.equals(assignConstraint.toConstraintValue)){

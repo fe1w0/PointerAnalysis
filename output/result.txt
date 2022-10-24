@@ -1,3 +1,50 @@
-test
-test
-test
+---------------Analysis Result (objects.B.<init>.<objects.B: void <init>()>): 
+r0 : r0 
+
+---------------Analysis Result (objects.A.<init>.<objects.A: void <init>()>): 
+r0 : r0 
+r0.<objects.A: int i> : r0.<objects.A: int i> 
+$r1 : $r1 
+r0.<objects.A: objects.B f> : r0.<objects.A: objects.B f> $r1 
+$r2 : $r2 
+r0.<objects.A: objects.B g> : r0.<objects.A: objects.B g> $r2 
+
+---------------Analysis Result (objects.A.<init>.<objects.A: void <init>(objects.B)>): 
+r0 : r0 
+r3 : r3 
+r0.<objects.A: int i> : r0.<objects.A: int i> 
+$r1 : $r1 
+r0.<objects.A: objects.B f> : r0.<objects.A: objects.B f> $r1 r3 
+$r2 : $r2 
+r0.<objects.A: objects.B g> : r0.<objects.A: objects.B g> $r2 $r4 r0.<objects.A: objects.B f> $r1 r3 
+$r4 : $r4 r0.<objects.A: objects.B f> $r1 r3 
+
+---------------Analysis Result (objects.A.getF.<objects.A: objects.B getF()>): 
+r0 : r0 
+$r1 : $r1 r0.<objects.A: objects.B f> 
+
+---------------Analysis Result (objects.A.getH.<objects.A: objects.B getH()>): 
+r0 : r0 
+$r1 : $r1 r0.<objects.A: objects.B h> 
+
+---------------Analysis Result (objects.A.id.<objects.A: objects.B id(objects.B)>): 
+r1 : r1 
+r0 : r0 
+
+---------------Analysis Result (hello.Hello.<init>.<hello.Hello: void <init>()>): 
+r0 : r0 
+
+---------------Analysis Result (hello.Hello.main.<hello.Hello: void main(java.lang.String[])>): 
+r3 : r3 
+$r0 : $r0 
+r4 : r4 $r0 $r1 
+$r1 : $r1 
+$r2 : $r2 
+$i0 : $i0 
+
+---------------Analysis Result (hello.A.<init>.<hello.A: void <init>()>): 
+r0 : r0 
+
+---------------Analysis Result (hello.A.test.<hello.A: void test()>): 
+r0 : r0 
+

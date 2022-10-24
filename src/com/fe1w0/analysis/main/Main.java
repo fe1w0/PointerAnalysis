@@ -16,5 +16,6 @@ public class Main {
     public static void main(String[] args) {
         String sourceDirectory = "sample";
         PointerAnalysis pointerAnalysis = new PointerAnalysis(sourceDirectory);
+
     }
 }
