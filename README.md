@@ -5,7 +5,7 @@
 - [x] 源代码阅读
 - [x] 添加案例
 - [x] 测试
-- [ ] 优化
+- [ ] 优化（狗都不优化）
 
 ## Version
 ### version 0.1
@@ -65,4 +65,43 @@ if (rightValue instanceof FieldRef) {
 我好像把from和to的关系又弄混了。
 
 以 a = b 为例子，b为fromValue，a为toValue。
+
+#### 坑1 ：FieldRef 不同上下文的FieldRef 不同（特值行数）
+
+```java
+[+] (FieldRef, Local):r0.<objects.A: objects.B f> = $r1
+Local HashCode: 546392117;FieldRef HashCode: 1452134218;FieldRef Field HashCode: 1267338499
+Local HashCode: 1633439396
+[+] start with "new" (Local, Local):$r2 = new objects.B
+Local HashCode: 1098139353
+Local HashCode: 1098139353
+[+] (FieldRef, Local):r0.<objects.A: objects.B g> = $r2
+Local HashCode: 546392117;FieldRef HashCode: 1206043908;FieldRef Field HashCode: 1425241044
+Local HashCode: 1098139353
+[+] (FieldRef, Local):r0.<objects.A: objects.B f> = r3
+Local HashCode: 546392117;FieldRef HashCode: 1926620223;FieldRef Field HashCode: 1267338499
+```
+
+
+
+#### 坑2：需要 `@Override`
+
+```java
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConstraintValue that = (ConstraintValue) o;
+        return Objects.equals(localValue, that.localValue) && Objects.equals(fieldValue, that.fieldValue);
+    }
+
+    @Override
+    public int hashCode() {
+        if (fieldValue == null) {
+            return localValue.hashCode();
+        } else {
+            return fieldValue.hashCode();
+        }
+    }
+```
 
