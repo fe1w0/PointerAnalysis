@@ -5,7 +5,7 @@
 - [x] 源代码阅读
 - [x] 添加案例
 - [x] 测试
-- [ ] 优化（狗都不优化）
+- [ ] 优化
 
 ## Version
 ### version 0.1
@@ -13,6 +13,10 @@
 
 ### version 0.2
 - [x] 考虑 `JInstanceFieldRef` 指令，~~即 `class.g` 无法用直接转换为Local 类~~，这个问题比我想象的难很多。
+
+### version 0.3
+
+待定，还没想好要不要加Steensgaard，以及完善Simple Anderson算法（我那个简直稀烂）。
 
 ## 自言自语
 
@@ -104,4 +108,8 @@ Local HashCode: 546392117;FieldRef HashCode: 1926620223;FieldRef Field HashCode:
         }
     }
 ```
+
+
+
+
 
