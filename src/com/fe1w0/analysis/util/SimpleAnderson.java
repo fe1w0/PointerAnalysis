@@ -1,6 +1,5 @@
 package com.fe1w0.analysis.util;
 
-import fj.Hash;
 import soot.Local;
 import soot.SootField;
 import soot.ValueBox;
