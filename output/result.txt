@@ -1,50 +1,50 @@
 ---------------Analysis Result (objects.B.<init>.<objects.B: void <init>()>): 
-r0 : r0 
+r0(objects.B) : r0(objects.B) 
 
 ---------------Analysis Result (objects.A.<init>.<objects.A: void <init>()>): 
-r0 : r0 
+r0(objects.A) : r0(objects.A) 
 r0.<objects.A: int i> : r0.<objects.A: int i> 
-$r1 : $r1 
-r0.<objects.A: objects.B f> : r0.<objects.A: objects.B f> $r1 
-$r2 : $r2 
-r0.<objects.A: objects.B g> : r0.<objects.A: objects.B g> $r2 
+$r1(objects.B) : $r1(objects.B) 
+r0.<objects.A: objects.B f> : r0.<objects.A: objects.B f> $r1(objects.B) 
+$r2(objects.B) : $r2(objects.B) 
+r0.<objects.A: objects.B g> : r0.<objects.A: objects.B g> $r2(objects.B) 
 
 ---------------Analysis Result (objects.A.<init>.<objects.A: void <init>(objects.B)>): 
-r0 : r0 
-r3 : r3 
+r0(objects.A) : r0(objects.A) 
+r3(objects.B) : r3(objects.B) 
 r0.<objects.A: int i> : r0.<objects.A: int i> 
-$r1 : $r1 
-r0.<objects.A: objects.B f> : r0.<objects.A: objects.B f> $r1 r3 
-$r2 : $r2 
-r0.<objects.A: objects.B g> : r0.<objects.A: objects.B g> $r2 $r4 r0.<objects.A: objects.B f> $r1 r3 
-$r4 : $r4 r0.<objects.A: objects.B f> $r1 r3 
+$r1(objects.B) : $r1(objects.B) 
+r0.<objects.A: objects.B f> : r0.<objects.A: objects.B f> $r1(objects.B) r3(objects.B) 
+$r2(objects.B) : $r2(objects.B) 
+r0.<objects.A: objects.B g> : r0.<objects.A: objects.B g> $r2(objects.B) $r4(objects.B) r0.<objects.A: objects.B f> $r1(objects.B) r3(objects.B) 
+$r4(objects.B) : $r4(objects.B) r0.<objects.A: objects.B f> $r1(objects.B) r3(objects.B) 
 
 ---------------Analysis Result (objects.A.getF.<objects.A: objects.B getF()>): 
-r0 : r0 
-$r1 : $r1 r0.<objects.A: objects.B f> 
+r0(objects.A) : r0(objects.A) 
+$r1(objects.B) : $r1(objects.B) r0.<objects.A: objects.B f> 
 
 ---------------Analysis Result (objects.A.getH.<objects.A: objects.B getH()>): 
-r0 : r0 
-$r1 : $r1 r0.<objects.A: objects.B h> 
+r0(objects.A) : r0(objects.A) 
+$r1(objects.B) : $r1(objects.B) r0.<objects.A: objects.B h> 
 
 ---------------Analysis Result (objects.A.id.<objects.A: objects.B id(objects.B)>): 
-r1 : r1 
-r0 : r0 
+r1(objects.A) : r1(objects.A) 
+r0(objects.B) : r0(objects.B) 
 
 ---------------Analysis Result (hello.Hello.<init>.<hello.Hello: void <init>()>): 
-r0 : r0 
+r0(hello.Hello) : r0(hello.Hello) 
 
 ---------------Analysis Result (hello.Hello.main.<hello.Hello: void main(java.lang.String[])>): 
-r3 : r3 
-$r0 : $r0 
-r4 : r4 $r0 $r1 
-$r1 : $r1 
-$r2 : $r2 
-$i0 : $i0 
+r3(java.lang.String[]) : r3(java.lang.String[]) 
+$r0(hello.A) : $r0(hello.A) 
+r4(hello.A) : r4(hello.A) $r0(hello.A) $r1(hello.A) 
+$r1(hello.A) : $r1(hello.A) 
+$r2(hello.A) : $r2(hello.A) 
+$i0(int) : $i0(int) 
 
 ---------------Analysis Result (hello.A.<init>.<hello.A: void <init>()>): 
-r0 : r0 
+r0(hello.A) : r0(hello.A) 
 
 ---------------Analysis Result (hello.A.test.<hello.A: void test()>): 
-r0 : r0 
+r0(hello.A) : r0(hello.A) 
 

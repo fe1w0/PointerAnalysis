@@ -36,7 +36,7 @@ class ConstraintValue {
     }
 
     public static List<Local> getLocalFromFieldRef(FieldRef fieldRef) {
-        // 得到fieldRef 的 所有 Local，但为什么我感觉FieldRef只有一个Local？
+        // 得到fieldRef 的 所有 Local，但为什么我感觉 FieldRef 只有一个Local？
         List<Local> localList = new ArrayList<Local>();
         for (ValueBox valueBox : fieldRef.getUseBoxes()) {
             localList.add((Local)valueBox.getValue());
@@ -178,14 +178,16 @@ public class SimpleAnderson {
             if (toConstraintValue.fieldValue != null) {
                 stringResult.append(toConstraintValue.localValue.toString() + "." + toConstraintValue.fieldValue.toString()).append(" : ");
             } else {
-                stringResult.append(toConstraintValue.localValue.toString()).append(" : ");
+                stringResult.append(toConstraintValue.localValue.toString() +
+                        "(" + toConstraintValue.localValue.getType().toString() + ")" ).append(" : ");
             }
 //            stringResult.append("(hashCode:" + toConstraintValue.hashCode() + ") ");
             for (ConstraintValue fromConstraintValue : fromConstraintValueList) {
                 if (fromConstraintValue.fieldValue != null) {
                     stringResult.append(fromConstraintValue.localValue.toString() + "." + fromConstraintValue.fieldValue.toString()).append(" ");
                 } else {
-                    stringResult.append(fromConstraintValue.localValue.toString()).append(" ");
+                    stringResult.append(fromConstraintValue.localValue.toString() +
+                            "(" + fromConstraintValue.localValue.getType().toString() + ")" ).append(" ");
                 }
             }
             stringResult.append("\n");
