@@ -62,6 +62,10 @@ public class AnalysisTransform extends SceneTransformer {
                             }
                         } else if (leftValue instanceof Local && rightValue instanceof FieldRef) {
                             // Example $r2 = r0.<objects.A: objects.B g>
+                            // A a = new A();
+                            // A aa = new A();
+                            // a -> g = new B();
+                            // aa -> g = new B();
                             try {
                                 Local leftLocal = (Local) leftValue;
                                 FieldRef rightFieldRef = (FieldRef) rightValue;
