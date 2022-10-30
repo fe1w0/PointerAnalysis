@@ -2,10 +2,8 @@ package com.fe1w0.analysis.util;
 
 import soot.*;
 import soot.options.Options;
-import soot.util.Chain;
 
 import java.util.Collections;
-import java.util.List;
 
 public class PointerAnalysis {
 
@@ -23,6 +21,7 @@ public class PointerAnalysis {
         // it also generates information about the targets of pointers.
         // For details about Spark, please see Ondrej Lhotak's M.Sc. thesis.
         // 不是说，不让直接用 soot 的 pointer analysis 分析工具吗
+        // 可能有依赖问题吧？
         Options.v().setPhaseOption("cg.spark", "enabled:true");
         // 处理对象是 whole-jimple transformation pack
         Options.v().set_whole_program(true);
