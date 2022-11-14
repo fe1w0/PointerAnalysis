@@ -1,6 +1,9 @@
 # Intraprocedural PointerAnalysis
 软件分析课作业，使用SOOT完成指针分析，不能直接调用SOOT的指针分析模块。
 
+>看了大哥们的分享，我这个就是个垃圾，有空再改。
+> 
+
 ## TODO List
 - [x] 源代码阅读
 - [x] 添加案例
